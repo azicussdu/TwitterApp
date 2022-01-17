@@ -1,8 +1,10 @@
 package com.example.demo.security;
 
 import com.example.demo.entity.User;
+import com.example.demo.error.ResourceNotFoundException;
 import com.example.demo.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,15 +22,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username);
-        if (user == null) {
-            log.error("User with username: {} not found", username);
-            throw new UsernameNotFoundException("User not found in the database");
-        }
-        else{
-            log.info("User found in the DB by username: {}", username);
-        }
+    public UserDetails loadUserByUsername(String username) {
+        log.info("@@@ UserDetailsServiceImpl: in loadUserByUsername()");
+
+        User user = userRepository.findByUsername(username).
+                orElseThrow(() -> new UsernameNotFoundException("No user with username: " + username + " found"));
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(role -> {

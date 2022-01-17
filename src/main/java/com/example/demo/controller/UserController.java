@@ -6,10 +6,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
+import com.example.demo.error.ResourceAlreadyExistsException;
+import com.example.demo.error.ResourceNotFoundException;
 import com.example.demo.service.UserService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -35,24 +39,28 @@ public class UserController {
 
     @GetMapping("/users")
     public ResponseEntity<List<User>> getUsers() {
+        log.info("@@@ UserController: in getUsers()");
         return ResponseEntity.ok().body(userService.getUsers());
     }
 
     @PostMapping("/user/save")
-    public ResponseEntity<User> saveUser(@RequestBody User user) {
+    public ResponseEntity<User> saveUser(@RequestBody User user) throws ResourceAlreadyExistsException {
+        log.info("@@@ UserController: in saveUser()");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/user/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveUser(user));
     }
 
     @PostMapping("/role/save")
-    public ResponseEntity<Role> saveRole(@RequestBody Role role) {
+    public ResponseEntity<Role> saveRole(@RequestBody Role role) throws ResourceAlreadyExistsException {
+        log.info("@@@ UserController: in saveRole()");
         URI uri = URI.create(ServletUriComponentsBuilder.fromCurrentContextPath().path("/api/role/save").toUriString());
         return ResponseEntity.created(uri).body(userService.saveRole(role));
     }
 
     @PostMapping("/role/addrole")
-    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) {
-        userService.addRoleToUser(form.getUsername(), form.getRoleName());
+    public ResponseEntity<?> addRoleToUser(@RequestBody RoleToUserForm form) throws ResourceNotFoundException {
+        log.info("@@@ UserController: in addRoleToUser()");
+        userService.addRoleToUser(form.getUsername(), form.getRolename());
         return ResponseEntity.ok().build();
     }
 
@@ -99,5 +107,5 @@ public class UserController {
 @Data
 class RoleToUserForm {
     private String username;
-    private String roleName;
+    private String rolename;
 }

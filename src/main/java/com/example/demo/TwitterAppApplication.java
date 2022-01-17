@@ -3,6 +3,7 @@ package com.example.demo;
 import com.example.demo.entity.Role;
 import com.example.demo.entity.User;
 import com.example.demo.service.UserService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -10,6 +11,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+@Slf4j
 @SpringBootApplication
 public class TwitterAppApplication {
 
@@ -19,6 +21,7 @@ public class TwitterAppApplication {
 
 	@Bean
 	PasswordEncoder passwordEncoder(){
+		log.info("@@@ TwitterAppApplication: in passwordEncoder()");
 		return new BCryptPasswordEncoder();
 	}
 

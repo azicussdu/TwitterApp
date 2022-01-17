@@ -29,12 +29,16 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("@@@ CustomAuthorizationFilter: in doFilterInternal()");
         if (request.getServletPath().equals("/login") || request.getServletPath().equals("/api/token/refresh")) {
+            log.info("@@@ CustomAuthorizationFilter: in IF()");
             filterChain.doFilter(request, response);
         } else {
+            log.info("@@@ CustomAuthorizationFilter: in ELSE()");
             String authorizationHeader = request.getHeader(AUTHORIZATION);
             if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
                 try {
+                    log.info("@@@ CustomAuthorizationFilter: in TRY()");
                     String token = authorizationHeader.substring("Bearer ".length());
                     Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
                     JWTVerifier verifier = JWT.require(algorithm).build();
@@ -52,7 +56,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                     filterChain.doFilter(request, response);
                 } catch (Exception exception) {
-                    log.error("Error logging in in: {}", exception.getMessage());
+                    log.info("@@@ CustomAuthorizationFilter: in ERROR()");
                     response.setHeader("error", exception.getMessage());
                     response.setStatus(FORBIDDEN.value());
                     Map<String, String> error = new HashMap<>();
