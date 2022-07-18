@@ -43,7 +43,7 @@ public class UserServiceImpl implements UserService {
     public User saveUser(User user) throws ResourceAlreadyExistsException {
         log.info("@@@ UserServiceImpl: in saveUser()");
         Optional<User> userBD = userRepository.findByUsername(user.getUsername());
-        if(userBD.isPresent())
+        if (userBD.isPresent())
             throw new ResourceAlreadyExistsException("User with username: " + user.getUsername() + " already exists");
 
         user.setPassword(passwordEncoder.encode(user.getPassword()));
@@ -54,7 +54,7 @@ public class UserServiceImpl implements UserService {
     public Role saveRole(Role role) throws ResourceAlreadyExistsException {
         log.info("@@@ UserServiceImpl: in saveRole()");
         Optional<Role> roleBD = roleRepository.findByName(role.getName());
-        if(roleBD.isPresent())
+        if (roleBD.isPresent())
             throw new ResourceAlreadyExistsException("Role with name: " + role.getName() + " already exists");
         return roleRepository.save(role);
     }

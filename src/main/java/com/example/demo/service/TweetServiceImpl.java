@@ -15,7 +15,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 @Slf4j
 @Transactional
-public class TweetServiceImpl implements TweetService{
+public class TweetServiceImpl implements TweetService {
 
     private final TweetRepository tweetRepository;
 
@@ -44,8 +44,8 @@ public class TweetServiceImpl implements TweetService{
         Tweet tweetDB = tweetRepository.findById(id).
                 orElseThrow(() -> new IllegalStateException("no tweet with ID: " + id));
 
-        if(Objects.nonNull(tweet.getMessage()) &&
-                !"".equalsIgnoreCase(tweet.getMessage())){
+        if (Objects.nonNull(tweet.getMessage()) &&
+                !"".equalsIgnoreCase(tweet.getMessage())) {
             tweetDB.setMessage(tweet.getMessage());
         }
 

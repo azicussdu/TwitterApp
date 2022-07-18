@@ -37,11 +37,11 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
 
-        try{
+        try {
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
             return authentication;
-        } catch (AuthenticationException exception){
-            log.info("@@@ CustomAuthenticationFilter: in CATCH");
+        } catch (AuthenticationException exception) {
+            log.info("CustomAuthenticationFilter: in CATCH");
         }
 
         return null;
@@ -52,9 +52,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                                             HttpServletResponse response,
                                             FilterChain chain,
                                             Authentication authentication) throws IOException, ServletException {
-        log.info("@@@ CustomAuthenticationFilter: in successfulAuthentication()");
+        log.info("CustomAuthenticationFilter: in successfulAuthentication()");
 
-        User user = (User)authentication.getPrincipal(); //authenticated user
+        User user = (User) authentication.getPrincipal(); //authenticated user
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
         String access_token = JWT.create()
